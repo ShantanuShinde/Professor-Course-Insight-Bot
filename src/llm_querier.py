@@ -12,12 +12,12 @@ _set_env("GOOGLE_API_KEY")
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent, chat_agent_executor
 from langgraph.checkpoint.memory import InMemorySaver
-
+print("here")
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
-schema = "professors (id, first_name, last_name, email) \
-          courses (course_id, title, class_level)  \
-          grades (professor_id, course_id, section_id, A, Aminus, Bplus, B, Bminus, Cplus, C, Cminus, Dplus, D, Dminus, F, W)"
-system_prompt = f"You are a SQL query generator. You generate concise queries for the provided prompt, with out any code blocks or markdown formatting. \
+schema = "professors (id, first_name, last_name, email) Key(id) \
+          courses (course_id, title, class_level) Key(course_id) \
+          grades (professor_id, course_id, section_id, A, Aminus, Bplus, B, Bminus, Cplus, C, Cminus, Dplus, D, Dminus, F, W) Key(professor_id, course_id, section_id)"
+system_prompt = f"You are a SQL query generator. You generate concise queries with DISTINCT keyword for the provided prompt, with out any code blocks or markdown formatting. \
                  if prompt isn't related to getting SQL query. \
                  Course ID is of format <subject_prefix><course_number> eg: CS1234. \
                  schema: {schema}"
