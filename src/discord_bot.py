@@ -1,5 +1,5 @@
 import discord
-from llm_querier import get_sql_query
+from llm_querier import get_sql_query, get_nl_response
 from sql_manager import get_query_results
 
 intents = discord.Intents.default()
@@ -15,10 +15,10 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-
-    query = get_sql_query(message.content)
-    print(query)
+    question = message.content
+    query = get_sql_query(question)
     result = get_query_results(query)
-    await message.channel.send(result)
+    response = get_nl_response(question, result)
+    await message.channel.send(response)
 
-client.run('')
+client.run()
