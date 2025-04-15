@@ -3,7 +3,7 @@
 ## Loading database into MySQL
 
 With MySQL installed in your machine, run the following command to load `insight_database.sql` into your MySQL server.
-> mysql -u root -p insight_database < insight_database.sql
+> Get-Content .\resources\insight_database.sql | mysql -u root -p insight_database
 
 To save updated database into the file, run the following command
 > mysqldump -u root -p insight_database > insight_database.sql
