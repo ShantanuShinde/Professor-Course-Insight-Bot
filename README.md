@@ -8,10 +8,18 @@ With MySQL installed in your machine, run the following command to load `insight
 To save updated database into the file, run the following command
 > mysqldump -u root -p insight_database > insight_database.sql
 
-## Running the bot
-1. Go to Discord and create a server.
-2. Open https://discord.com/oauth2/authorize?client_id=1351965308130295859&permissions=8&integration_type=0&scope=bot to add
-the bot to your server with administrator permissions.
-3. Add the bot token in the `discord_bot.py` file.
-4. Run `discord_bot.py`.
-5 Ask questions to the bot through your server chat.
+## Running the Chatbot Server
+1. Go to the back_end directory.
+2. Install the required libraries using:
+> pip install -r requirements.txt
+3. Run the  `chatbot_api_server.py` file as 
+> python chatbot_api_server.py
+
+## Running the frontend server
+1. Go to the front_end directory
+2. Make sure you have nodejs installed.
+3. Install nextjs and react using:
+> npm install next react react-dom
+4. Run the nodejs server using:
+> npm run dev
+5. The frontend should open up at the mentioned link in the output.

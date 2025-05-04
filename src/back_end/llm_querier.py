@@ -7,16 +7,12 @@ def _set_env(var: str):
         os.environ[var] = getpass.getpass(f"{var}: ")
 
 
-#_set_env("GOOGLE_API_KEY")
 _set_env("OPENAI_API_KEY")
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent, chat_agent_executor
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
-
-# llm1 = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
-# llm2 = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 
 llm1 = ChatOpenAI(model="gpt-4")
 llm2 = ChatOpenAI(model="gpt-4")
