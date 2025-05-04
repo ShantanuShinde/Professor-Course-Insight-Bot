@@ -49,7 +49,6 @@ export default function ChatbotPage() {
 
     try {
       console.log("Sending message:", input) // Debug log
-      console.log(input)
       // Replace with your actual API endpoint
       const response = await fetch("/api/chat", {
         method: "POST",
