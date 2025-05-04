@@ -80,16 +80,17 @@ The table 'sections' has the following columns:
 
 
 sql_system_prompt = f"You are a My SQL query generator. You generate concise queries with DISTINCT keyword for the provided prompt, with out any code blocks or markdown formatting. \
-                 if prompt isn't related to getting SQL query. \
+                 Only give query, no other text. \
                  Also use full form of course titles. eg: NLP = Natural Language Processing \
                  Also always give SQL queries, no direct answers. \
                  Utilize keywords such as LIMIT for restricting size of result if asked to. \
                  Do not give any destructive queries such as DROP or DELETE.\
                  schema: {schema}"
 nl_system_prompt = "You generate natural language responses. You will be given a question and a result from a SQL query relating to the question.\
-                    If the query result is too big, ask for followup questions to get more specific answers.\
+                    If the query result is too big, ask for followup questions to get more specific answers. \
+                    DO NOT GIVE TOO BIG RESULTS, ALWAYS GIVE PARTIAL AND ASK QUESTION TO GET MORE SPECIFIC QUESTION. \
                     You need to convert the query result into natural language response and answer the question. If the result says 'Failed' or the it is empty\
-                    reply saying that 'I cannot answer the question'"
+                    reply saying that 'I cannot answer the question. Also answer as if taking to another person, don't mentioned implementation details'"
 
 checkpointer1 = InMemorySaver()
 sql_generator = create_react_agent(model=llm1, tools=[], prompt=sql_system_prompt, checkpointer=checkpointer1)
@@ -97,7 +98,6 @@ config = {"configurable": {"thread_id": "1"}}
 def get_sql_query(user_input: str):
     for event in sql_generator.stream({"messages": [{"role": "user", "content": user_input}]}, config=config, stream_mode="values"):
         if len(event["messages"][-1].response_metadata) != 0:
-            print(event["messages"][-1].content)
             return event["messages"][-1].content
         
 checkpointer2 = InMemorySaver()

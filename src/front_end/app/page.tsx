@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -49,20 +48,23 @@ export default function ChatbotPage() {
     setIsLoading(true)
 
     try {
+      console.log("Sending message:", input) // Debug log
+      console.log(input)
       // Replace with your actual API endpoint
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ "question": input }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to get response")
+        throw new Error(`Failed to get response: ${response.status}`)
       }
 
       const data = await response.json()
+      console.log("Received response:", data) // Debug log
 
       // Add bot response
       const botMessage: Message = {

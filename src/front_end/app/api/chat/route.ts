@@ -2,16 +2,12 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 export async function POST(request: Request) {
   try {
-    const { question } = await request.json(); // changed from `message` to `question`
-
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    const { question } = await request.json();
     // Simulate a response
     const response = {
       response: await getResponse(question),
     };
-
+    console.log(response)
     return NextResponse.json(response);
   } catch (error) {
     console.error("Error processing ask request:", error);
@@ -21,6 +17,8 @@ export async function POST(request: Request) {
 
 // Placeholder logic — you can replace this with actual call to Python backend
 async function getResponse(question: string): Promise<string> {
-    const res = await axios.post("/api/ask", { question }); // <-- passing the question
+    const res = await axios.post("http://127.0.0.1:5000/api/ask", 
+      { "question": question }, 
+      { headers: { "Content-Type": "application/json" } });
     return res.data.response
 }
