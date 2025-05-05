@@ -12,7 +12,7 @@ def get_query_results(query):
             host="localhost",
             user="root",
             password="test",
-            database="insightdb"
+            database="UTDAcademicData"
             )
         cursor = database.cursor()
         cursor.execute(query)
