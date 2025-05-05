@@ -17,62 +17,44 @@ from langgraph.checkpoint.memory import InMemorySaver
 llm1 = ChatOpenAI(model="gpt-4")
 llm2 = ChatOpenAI(model="gpt-4")
 
-schema = """The table 'courses' has the following columns:
-  subject_prefix: text, nullable — the subject abbreviation (e.g., CS, ACCT)
-  course_number: text, nullable — the course number (e.g., 1200, 2301)
-  title: text, nullable — the full title of the course
-  class_level: text, nullable — the classification of the course (e.g., Undergraduate, Graduate)
-The table 'grades_by_professor' has the following columns:
-  subject_prefix: text, nullable — the subject abbreviation (e.g., CS, ACCT)
-  course_number: text, nullable — the course number (e.g., 1200, 2301)
-  profFirst: text, nullable — the professor's first name
-  profLast: text, nullable — the professor's last name
-  term: text, nullable — the academic term code (e.g., 24F, 25S)
-  A_plus: bigint, nullable — number of A+ grades
-  A: bigint, nullable — number of A grades
-  A_minus: bigint, nullable — number of A- grades
-  B_plus: bigint, nullable — number of B+ grades
-  B: bigint, nullable — number of B grades
-  B_minus: bigint, nullable — number of B- grades
-  C_plus: bigint, nullable — number of C+ grades
-  C: bigint, nullable — number of C grades
-  C_minus: bigint, nullable — number of C- grades
-  D_plus: bigint, nullable — number of D+ grades
-  D: bigint, nullable — number of D grades
-  D_minus: bigint, nullable — number of D- grades
-  F: bigint, nullable — number of F grades
-  W: bigint, nullable — number of withdrawals
-The table 'professor_course_mapping' has the following columns:
-  subject_prefix: text, nullable — the subject abbreviation (e.g., CS, ACCT)
-  course_number: text, nullable — the course number (e.g., 1200, 2301)
-  profFirst: text, nullable — the professor's first name
-  profLast: text, nullable — the professor's last name
-The table 'professors' has the following columns:
-  professorId: text, nullable — unique identifier for the professor
-  profFirst: text, nullable — the professor's first name
-  profLast: text, nullable — the professor's last name
-  email: text, nullable — the professor's email address
-  phone_number: text, nullable — the professor's phone number
-The table 'profs_remarks' has the following columns:
-  profFirst: text, nullable — the professor's first name
-  profLast: text, nullable — the professor's last name
-  avgDifficulty: double, nullable — average difficulty rating of the professor
-  avgRating: double, nullable — average overall rating of the professor
-  department: text, nullable — department to which the professor belongs
-  totalRatings: bigint, nullable — total number of ratings received
-  r1: bigint, nullable — count of 1-star ratings
-  r2: bigint, nullable — count of 2-star ratings
-  r3: bigint, nullable — count of 3-star ratings
-  r4: bigint, nullable — count of 4-star ratings
-  r5: bigint, nullable — count of 5-star ratings
-  professorTags: text, nullable — tags describing the professor (e.g., "Tough grader", "Inspirational")
-  wouldTakeAgainPercent: double, nullable — percentage of students who would take the professor again
-The table 'sections' has the following columns:
-  sectionId: text, nullable — unique identifier for the section
-  course_reference: text, nullable — reference ID linking to the course
-  professorId: text, nullable — unique identifier of the professor teaching the section
-  instruction_mode: text, nullable — mode of instruction (e.g., Face-to-Face, Online)
-  meeting_days: text, nullable — days the class meets (e.g., Mon, Wed, Fri)"""
+schema = """
+Table: courses
+title (VARCHAR(255)): Full name of the course
+class_level (VARCHAR(255)): Course classification (e.g., Undergraduate)
+course_id (VARCHAR(255), PRIMARY KEY): Unique course identifier (e.g., CS2305)
+This gives list of all courses
+
+Table: grades
+prof_name (VARCHAR(255), NOT NULL): Professor's first name and last name concatenated (eg. Aaron Smith -> AaronSmith)
+term (VARCHAR(255), NOT NULL): Academic term code (e.g., 24F)
+Aplus to F, W (INT, NULLABLE): Grade distribution columns
+course_id (VARCHAR(255), NOT NULL): Course identifier
+Primary Key: (course_id, prof_name, term)
+Foreign Keys:
+(prof_name) → professors(name)
+course_id → courses(course_id)
+This table gives grades distribution of each professor for each course taught by them
+
+Table: professors
+professorId (VARCHAR(255)): Optional unique identifier
+name (VARCHAR(255), NOT NULL): Professor's first name and last name concatenated (eg. Aaron Smith -> AaronSmith)
+email (VARCHAR(255)): Email address
+phone_number (VARCHAR(255)): Phone number
+Primary Key: (name)
+This gives list of all professors.
+
+Table: professor_remarks
+prof_name (VARCHAR(255), NOT NULL): Professor's first name and last name concatenated (eg. Aaron Smith -> AaronSmith)
+avg_difficulty (DOUBLE): Average difficulty rating
+avg_rating (DOUBLE): Average overall rating
+department (VARCHAR(255)): Department name
+total_ratings (VARCHAR(255)): Total number of ratings (stored as text)
+r1 to r5 (INT): Count of 1–5 star ratings
+tags (VARCHAR(255)): Tags describing the professor
+would_take_again (DOUBLE): % of students who would take them again
+Primary Key: (prof_name)
+Foreign Key: (prof_name) → professors(name)
+This table gives remarks about the professors """
 
 
 sql_system_prompt = f"You are a My SQL query generator. You generate concise queries with DISTINCT keyword for the provided prompt, with out any code blocks or markdown formatting. \
@@ -80,7 +62,8 @@ sql_system_prompt = f"You are a My SQL query generator. You generate concise que
                  Also use full form of course titles. eg: NLP = Natural Language Processing \
                  Also always give SQL queries, no direct answers. \
                  Utilize keywords such as LIMIT for restricting size of result if asked to. \
-                 Do not give any destructive queries such as DROP or DELETE.\
+                 Do not give any destructive queries such as DROP or DELETE. \
+                 Use this schema for generating queries.\
                  schema: {schema}"
 nl_system_prompt = "You generate natural language responses. You will be given a question and a result from a SQL query relating to the question.\
                     If the query result is too big, ask for followup questions to get more specific answers. \

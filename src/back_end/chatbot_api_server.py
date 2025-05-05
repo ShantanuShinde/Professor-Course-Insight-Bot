@@ -10,7 +10,9 @@ CORS(app=app)
 def answer_question():
     question = request.json.get('question')
     query = get_sql_query(question)
+    print(query)
     result = get_query_results(query)
+    print(result)
     response = get_nl_response(question, result)
     return {"response" : response}
 
