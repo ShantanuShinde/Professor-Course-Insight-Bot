@@ -6,6 +6,7 @@ import { Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import DOMPurify from 'dompurify'
 
 interface Message {
   id: string
@@ -68,7 +69,7 @@ export default function ChatbotPage() {
       // Add bot response
       const botMessage: Message = {
         id: Date.now().toString(),
-        content: data.response || "Sorry, I couldn't process your request.",
+        content: DOMPurify.sanitize(data.response) || "Sorry, I couldn't process your request.",
         isUser: false,
         timestamp: new Date(),
       }
@@ -112,7 +113,10 @@ export default function ChatbotPage() {
                     message.isUser ? "bg-[#C75B12] text-white" : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <div
+                    className="whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{ __html: message.content }}
+                  />
                   <p className="text-xs mt-1 opacity-70">
                     {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </p>

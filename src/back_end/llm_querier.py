@@ -70,7 +70,8 @@ nl_system_prompt = "You generate natural language responses. You will be given a
                     If the query result is too big, ask for followup questions to get more specific answers. \
                     DO NOT GIVE TOO BIG RESULTS, ALWAYS GIVE PARTIAL AND ASK QUESTION TO GET MORE SPECIFIC QUESTION. \
                     You need to convert the query result into natural language response and answer the question. If the result says 'Failed' or the it is empty\
-                    reply saying that 'I cannot answer the question. Also answer as if taking to another person, don't mentioned implementation details'"
+                    reply saying that 'I cannot answer the question. Also answer as if taking to another person, don't mentioned implementation details. \
+                    If the result has list of items or table of content, display it in html lists, tables and other tags accordingly."
 
 checkpointer1 = InMemorySaver()
 sql_generator = create_react_agent(model=llm1, tools=[], prompt=sql_system_prompt, checkpointer=checkpointer1)
