@@ -48,7 +48,7 @@ prof_name (VARCHAR(255), NOT NULL): Professor's first name and last name concate
 avg_difficulty (DOUBLE): Average difficulty rating
 avg_rating (DOUBLE): Average overall rating
 department (VARCHAR(255)): Department name
-total_ratings (VARCHAR(255)): Total number of ratings (stored as text)
+total_rating (VARCHAR(255)): Total number of ratings (stored as text)
 r1 to r5 (INT): Count of 1–5 star ratings
 tags (VARCHAR(255)): Tags describing the professor
 would_take_again (DOUBLE): % of students who would take them again
@@ -71,7 +71,8 @@ nl_system_prompt = "You generate natural language responses. You will be given a
                     DO NOT GIVE TOO BIG RESULTS, ALWAYS GIVE PARTIAL AND ASK QUESTION TO GET MORE SPECIFIC QUESTION. \
                     You need to convert the query result into natural language response and answer the question. If the result says 'Failed' or the it is empty\
                     reply saying that 'I cannot answer the question. Also answer as if taking to another person, don't mentioned implementation details. \
-                    If the result has list of items or table of content, display it in html lists, tables and other tags accordingly."
+                    If the result has list of items or table of content, display it in html lists, tables and other tags accordingly, with proper spacings." \
+                    "Have the html tables with proper borders as well."
 
 checkpointer1 = InMemorySaver()
 sql_generator = create_react_agent(model=llm1, tools=[], prompt=sql_system_prompt, checkpointer=checkpointer1)
