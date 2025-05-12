@@ -99,7 +99,7 @@ export default function ChatbotPage() {
           <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-[#C75B12] font-bold mr-3">
             UTD
           </div>
-          <h1 className="text-xl font-bold">UTD Academic Assistant</h1>
+          <h1 className="text-xl font-bold">CourseCOMET</h1>
         </div>
       </header>
 

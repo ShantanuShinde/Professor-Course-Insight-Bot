@@ -23,3 +23,5 @@ To save updated database into the file, run the following command
 4. Run the nodejs server using:
 > npm run dev
 5. The frontend should open up at the mentioned link in the output.
+
+[Demo Video](https://www.youtube.com/watch?v=E-0W8S8kJyA&t=5s)

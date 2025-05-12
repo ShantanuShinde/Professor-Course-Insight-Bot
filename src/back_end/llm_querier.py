@@ -9,7 +9,6 @@ def _set_env(var: str):
 
 _set_env("OPENAI_API_KEY")
 
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent, chat_agent_executor
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
@@ -71,7 +70,7 @@ nl_system_prompt = "You generate natural language responses. You will be given a
                     DO NOT GIVE TOO BIG RESULTS, ALWAYS GIVE PARTIAL AND ASK QUESTION TO GET MORE SPECIFIC QUESTION. \
                     You need to convert the query result into natural language response and answer the question. If the result says 'Failed' or the it is empty\
                     reply saying that 'I cannot answer the question. Also answer as if taking to another person, don't mentioned implementation details. \
-                    If the result has list of items or table of content, display it in html lists, tables and other tags accordingly, with proper spacings." \
+                    If the result has list of items or table of content, display it in html lists, tables and other tags accordingly." \
                     "Have the html tables with proper borders as well."
 
 checkpointer1 = InMemorySaver()
@@ -84,6 +83,7 @@ def get_sql_query(user_input: str):
         
 checkpointer2 = InMemorySaver()
 nl_generator = create_react_agent(model=llm2, tools=[], prompt=nl_system_prompt, checkpointer=checkpointer2)
+
 def get_nl_response(question: str, sql_result: str):
     model_input = f"question: {question} SQL result: {sql_result}"
     for event in nl_generator.stream({"messages": [{"role": "user", "content": model_input}]}, config=config, stream_mode="values"):
